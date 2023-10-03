@@ -12,32 +12,59 @@ const listaTareas = [
 
 //Mostrar tareas:
 let mostrarTareas = () => {
-  console.log("Lista de tareas: ");
-  listaTareas.forEach((tarea, index) => {
-    console.log(`${index + 1}. ${tarea.Descripcion} - [${tarea.Estado}]`);
+  return new Promise((resolve) => {
+    console.log("Lista de tareas: ");
+    setTimeout(() => {
+      listaTareas.forEach((tarea, index) => {
+        console.log(`${index + 1}. ${tarea.Descripcion} - [${tarea.Estado}]`);
+      });
+      resolve("Lista de tareas: ");
+    }, 2000);
   });
 };
 
 //Agregar tarea:
 let agregarTarea = (descripcion) => {
-  const nuevaTarea = { Id: "", Descripcion: "", Estado: "Pendiente" };
-  nuevaTarea.Id = listaTareas.length + 1;
-  nuevaTarea.Descripcion = descripcion;
-  listaTareas.push(nuevaTarea);
-  console.log("Tarea agregada con exito: ");
-  console.log(nuevaTarea);
+  return new Promise((resolve) => {
+    const nuevaTarea = { Id: "", Descripcion: "", Estado: "Pendiente" };
+    nuevaTarea.Id = listaTareas.length + 1;
+    nuevaTarea.Descripcion = descripcion;
+
+    setTimeout(() => {
+      listaTareas.push(nuevaTarea);
+      console.log("Tarea agregada con exito: ");
+      resolve(nuevaTarea);
+    }, 2000);
+  });
 };
 
 //Eliminar tarea:
 let eliminarTarea = (indice) => {
-  listaTareas.splice(indice, 1);
-  console.log("Tarea eliminada correctamente.");
+  return new Promise((resolve, reject) => {
+    if (indice > listaTareas.length) {
+      reject(new Error("El indice seleccionado no existe."));
+      return;
+    }
+    setTimeout(() => {
+      listaTareas.splice(indice, 1);
+      resolve(console.log("Tarea eliminada correctamente."));
+    }, 2000);
+  });
 };
 
 //Completar una tarea:
 let completarTarea = (indice) => {
-  listaTareas[indice].Estado = "Completada";
-  console.log("Tarea marcada como completada");
+  return new Promise((resolve, reject) => {
+    if (indice > listaTareas.length) {
+      reject(new Error("El indice seleccionado no existe."));
+      return;
+    }
+
+    setTimeout(() => {
+      listaTareas[indice].Estado = "Completada";
+      resolve(console.log("Tarea marcada como completada"));
+    }, 2000);
+  });
 };
 
 // Pregunta inicial readline: (no anda)
@@ -51,31 +78,34 @@ function inicio() {
   ];
   console.log("Menu: \n");
   console.log(opciones);
-  readline.question("Elije una opcion: ", (opcion) => {
+  readline.question("Elije una opcion: \n", async (opcion) => {
     switch (opcion) {
       case "1":
-        mostrarTareas();
+        await mostrarTareas();
         inicio();
         break;
       case "2":
-        readline.question("¿Cual tarea deseas ingresar?", (tarea) => {
-          agregarTarea(tarea);
+        readline.question("¿Cual tarea deseas ingresar? \n", (tarea) => {
+          agregarTarea(tarea).then((data) => {
+            console.log(data);
+          });
           inicio();
         });
         break;
       case "3":
-        readline.question("¿Cual tarea deseas eliminar?", (tarea) => {
-          eliminarTarea(tarea);
+        readline.question("¿Cual tarea deseas eliminar? \n", async (tarea) => {
+          await eliminarTarea(tarea);
           inicio();
         });
         break;
       case "4":
-        readline.question("¿Cual tarea deseas completar?", (tarea) => {
-          completarTarea(tarea);
+        readline.question("¿Cual tarea deseas completar? \n", async (tarea) => {
+          await completarTarea(tarea);
           inicio();
         });
         break;
       case "5":
+        console.log("programa finalizado.");
         readline.close();
         break;
       default:
