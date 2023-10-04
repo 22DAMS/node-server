@@ -3,6 +3,8 @@ const readline = require("readline").createInterface({
   output: process.stdout,
 });
 
+const http = require("http");
+
 //Lista de tareas predeterminada
 const listaTareas = [
   { Id: "01", Descripcion: "Pasear al perro", Estado: "Completada" },
@@ -117,3 +119,19 @@ function inicio() {
 }
 
 inicio();
+
+//--------------------------------------------------<>----------------------------------------------------------------
+//Servidor
+
+const host = "localhost";
+const port = 8080;
+
+const taskListener = function (req, res) {
+  res.writeHead(200);
+  res.write(JSON.stringify(listaTareas));
+  res.end();
+};
+
+const server = http.createServer(taskListener);
+
+server.listen(port);
